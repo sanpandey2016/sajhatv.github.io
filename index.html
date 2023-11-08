@@ -9,28 +9,46 @@
     </style>
 </head>
 <body>
-    <video id="custom-video-player" controls width="640" height="360">
-        <!-- Provide the correct HLS stream URL here -->
-        <source src="https://gettvfree.tech/live/stream_e2.m3u8" type="application/x-mpegURL">
-    </video>
-
     <script>
-        // Get the video element
-        const videoElement = document.getElementById('custom-video-player');
+        fetch('https://gettvfree.tech/live/stream_e2.m3u8', {
+            headers: {
+                'Referer': 'https://sanpandey2016.github.io/'
+            }
+        })
+        .then(function(response) {
+            if (response.ok) {
+                return response.blob();
+            } else {
+                throw new Error('Network response was not ok.');
+            }
+        })
+        .then(function(blob) {
+            const videoElement = document.createElement('video');
+            videoElement.controls = true;
+            videoElement.width = 640;
+            videoElement.height = 360;
+            document.body.appendChild(videoElement);
 
-        if (Hls.isSupported()) {
-            const hls = new Hls();
-            hls.loadSource('https://gettvfree.tech/live/stream_e2.m3u8');
-            hls.attachMedia(videoElement);
-            hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                videoElement.play();
-            });
-        } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-            videoElement.src = 'https://gettvfree.tech/live/stream_e2.m3u8';
-            videoElement.addEventListener('loadedmetadata', function () {
-                videoElement.play();
-            });
-        }
+            const videoURL = URL.createObjectURL(blob);
+            videoElement.src = videoURL;
+
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(videoURL);
+                hls.attachMedia(videoElement);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    videoElement.play();
+                });
+            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                videoElement.src = videoURL;
+                videoElement.addEventListener('loadedmetadata', function () {
+                    videoElement.play();
+                });
+            }
+        })
+        .catch(function(error) {
+            console.error('Fetch error:', error);
+        });
     </script>
 </body>
 </html>
