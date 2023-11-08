@@ -1,62 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>M3U8 Player</title>
-    <!-- Include video.js styles and scripts -->
-    <link href="https://vjs.zencdn.net/7.14.3/video-js.css" rel="stylesheet">
-    <script src="https://vjs.zencdn.net/7.14.3/video.js"></script>
+    <title>Custom Video Player</title>
+    <!-- Include HLS.js from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* Add your custom styles here */
+    </style>
 </head>
 <body>
-    <h1>M3U8 Player</h1>
-
-    <video id="videoPlayer" class="video-js vjs-default-skin" controls></video>
+    <video id="custom-video-player" controls width="640" height="360">
+        <!-- Provide the correct HLS stream URL here -->
+        <source src="https://gettvfree.tech/live/stream_e2.m3u8" type="application/x-mpegURL">
+    </video>
 
     <script>
-        // Function to create and set up the video player
-        function setupVideoPlayer(videoUrl) {
-            // Get a reference to the video player element
-            const videoPlayer = videojs('videoPlayer');
+        // Get the video element
+        const videoElement = document.getElementById('custom-video-player');
 
-            // Set the source to the M3U8 stream
-            videoPlayer.src({
-                src: videoUrl,
-                type: 'application/x-mpegURL' // Specifies the M3U8 format
+        if (Hls.isSupported()) {
+            const hls = new Hls();
+            hls.loadSource('https://gettvfree.tech/live/stream_e2.m3u8');
+            hls.attachMedia(videoElement);
+            hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                videoElement.play();
             });
-
-            // Play the video
-            videoPlayer.play();
+        } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+            videoElement.src = 'https://gettvfree.tech/live/stream_e2.m3u8';
+            videoElement.addEventListener('loadedmetadata', function () {
+                videoElement.play();
+            });
         }
-
-        // Function to fetch the M3U8 link and initialize the player
-        function loadM3U8AndPlay() {
-            const xhr = new XMLHttpRequest();
-            const m3u8Url = 'https://sportsleading.online/live/stream_e1.m3u8';
-
-            xhr.open('GET', m3u8Url, true);
-
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    // Get the M3U8 playlist content
-                    const playlist = xhr.responseText;
-                    // Find the first media URL (typically, the first line starting with http)
-                    const mediaUrl = playlist.match(/^(http[^\r\n]*)/m);
-
-                    if (mediaUrl) {
-                        // Initialize the video player with the fetched media URL
-                        setupVideoPlayer(mediaUrl[1]);
-                    } else {
-                        console.error('No media URL found in the M3U8 playlist.');
-                    }
-                } else {
-                    console.error('Failed to load the M3U8 playlist.');
-                }
-            };
-
-            xhr.send();
-        }
-
-        // Load the M3U8 and initialize the video player when the page loads
-        window.onload = loadM3U8AndPlay;
     </script>
 </body>
 </html>
