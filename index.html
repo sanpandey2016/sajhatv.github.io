@@ -1,1 +1,105 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://vjs.zencdn.net/7.20.3/video-js.css" rel="stylesheet">
+    <style>
+        /* Your custom CSS for the video player */
+        .custom-video-player {
+            position: relative;
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        /* Style for the overlay container */
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        /* Style for the logo */
+        .overlay-logo {
+            width: 100px;
+            height: auto;
+        }
+        
+        /* Style for the name */
+        .overlay-name {
+            font-size: 24px;
+            color: white;
+            position: absolute;
+            top: 20px; /* Adjust the top position as needed */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        /* Style for the play button */
+        .play-button {
+            font-size: 32px;
+            color: white;
+        }
+        
+        /* Style for the video */
+        video {
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="mt-lg-0 mt-3">
+                <div class="d-block custom-video-player">
+                    <div class="overlay-container">
+                        <div class="overlay-name">Sajhalekh.com</div>
+                        <div class="play-button" id="playButton">&#9658;</div>
+                    </div>
+                    <video
+                        id="liveTV"
+                        class="video-js vjs-default-skin vjs-fluid liveTV-dimensions vjs-controls-enabled vjs-workinghover vjs-v7"
+                        preload="none"
+                        autoplay
+                        data-setup='{
+                            "controls": true,
+                            "aspectRatio": "16:9",
+                            "playbackRates": [1, 1.5, 2],
+                            "techOrder": ["html5", "flash"],
+                            "sources": [
+                                {
+                                    "src": "https://sportsleading.online/live/stream_e1.m3u8",
+                                    "type": "application/x-mpegURL"
+                                }
+                            ]
+                        }'
+                    ></video>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://vjs.zencdn.net/7.20.3/video.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const playButton = document.getElementById("playButton");
+            const video = document.getElementById("liveTV");
+
+            video.addEventListener("play", function () {
+                // Hide the play button when the video starts playing
+                playButton.style.display = "none";
+            });
+        });
+    </script>
+</body>
+</html>
+
