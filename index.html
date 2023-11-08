@@ -10,45 +10,49 @@
 </head>
 <body>
     <script>
-        fetch('https://hls.streambtw.com/live/stream_e2.m3u8', {
-            headers: {
-                'Referer': 'https://sanpandey2016.github.io/sajhatv.github.io/'
-            }
-        })
-        .then(function(response) {
-            if (response.ok) {
-                return response.blob();
+        // Create an XMLHttpRequest object
+        const xhr = new XMLHttpRequest();
+
+        // Set up the request
+        xhr.open('GET', 'https://hls.streambtw.com/live/stream_e2.m3u8', true);
+        xhr.setRequestHeader('Referer', 'https://sanpandey2016.github.io/sajhatv.github.io/');
+
+        // Handle the response
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                const videoBlob = xhr.response;
+                const videoURL = URL.createObjectURL(videoBlob);
+
+                const videoElement = document.createElement('video');
+                videoElement.controls = true;
+                videoElement.width = 640;
+                videoElement.height = 360;
+                document.body.appendChild(videoElement);
+
+                if (Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(videoURL);
+                    hls.attachMedia(videoElement);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        videoElement.play();
+                    });
+                } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+                    videoElement.src = videoURL;
+                    videoElement.addEventListener('loadedmetadata', function() {
+                        videoElement.play();
+                    });
+                }
             } else {
-                throw new Error('Network response was not ok.');
+                console.error('Request failed with status: ' + xhr.status);
             }
-        })
-        .then(function(blob) {
-            const videoElement = document.createElement('video');
-            videoElement.controls = true;
-            videoElement.width = 640;
-            videoElement.height = 360;
-            document.body.appendChild(videoElement);
+        };
 
-            const videoURL = URL.createObjectURL(blob);
-            videoElement.src = videoURL;
+        xhr.onerror = function() {
+            console.error('Request error.');
+        };
 
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(videoURL);
-                hls.attachMedia(videoElement);
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    videoElement.play();
-                });
-            } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                videoElement.src = videoURL;
-                videoElement.addEventListener('loadedmetadata', function () {
-                    videoElement.play();
-                });
-            }
-        })
-        .catch(function(error) {
-            console.error('Fetch error:', error);
-        });
+        // Send the request
+        xhr.send();
     </script>
 </body>
 </html>
