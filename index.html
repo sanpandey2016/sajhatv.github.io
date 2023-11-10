@@ -1,58 +1,81 @@
 <!DOCTYPE html>
 <html>
+<!-- Code by Keyframe Effects -->
 <head>
-    <title>Custom Video Player</title>
-    <!-- Include HLS.js from a CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+	<title>How to Play m3u8 Files with HTML5 Video Tag</title>
+	<link href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" rel="stylesheet" />
+	<link href="https://vjs.zencdn.net/7.2.3/video-js.css" rel="stylesheet" />
+	<link href="style.css" rel="stylesheet" />
     <style>
-        /* Add your custom styles here */
+        body {
+	background-image: linear-gradient(to right, #2B5876 , #4E4376);
+	color: #fff;
+}
+
+.maindiv {
+	text-align: center;
+}
+
+h1 {
+	font-size: 50px;
+	font-family: 'Paytone One', sans-serif;
+	margin-bottom: 50px;
+}
+
+#myVideo {
+	width: 50%;
+    border: 5px solid #00c7ff;
+    margin: 0 auto;
+    height: 60vh;
+}
+
+button.vjs-big-play-button {
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    left: 0!important;
+    right: 0;
+    bottom: 0;
+    top: 0!important;
+    height: 100% !important;
+    border: none !important;
+    background: none !important;
+}
+
+.video-js .vjs-big-play-button .vjs-icon-placeholder:before {
+	bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.video-js .vjs-tech {
+    height: 90%;
+}
     </style>
 </head>
+
 <body>
-    <script>
-        // Create an XMLHttpRequest object
-        const xhr = new XMLHttpRequest();
 
-        // Set up the request
-        xhr.open('GET', 'https://hls.streambtw.com/live/stream_e2.m3u8', true);
-        xhr.setRequestHeader('Referer', 'https://sanpandey2016.github.io/');
+<div class="maindiv">
+	<h1>Play m3u8 File with HTML5 Video Tag</h1>
 
-        // Handle the response
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                const videoBlob = xhr.response;
-                const videoURL = URL.createObjectURL(videoBlob);
+	<video id='myVideo'  class="video-js vjs-default-skin" width="400" height="300" controls>
+		<source type="application/x-mpegURL" src="https://gettvfree.tech/live/stream_e2.m3u8" />
+	</video>
+</div>
 
-                const videoElement = document.createElement('video');
-                videoElement.controls = true;
-                videoElement.width = 640;
-                videoElement.height = 360;
-                document.body.appendChild(videoElement);
+<!-- If you'd like to support IE8 (for Video.js versions prior to v7) -->
+<script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.14.1/videojs-contrib-hls.js"></script>
+<script src="https://vjs.zencdn.net/7.2.3/video.js"></script>
 
-                if (Hls.isSupported()) {
-                    const hls = new Hls();
-                    hls.loadSource(videoURL);
-                    hls.attachMedia(videoElement);
-                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                        videoElement.play();
-                    });
-                } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
-                    videoElement.src = videoURL;
-                    videoElement.addEventListener('loadedmetadata', function() {
-                        videoElement.play();
-                    });
-                }
-            } else {
-                console.error('Request failed with status: ' + xhr.status);
-            }
-        };
+<script>
+	var player = videojs('myVideo');
+	player.play();
+</script>
 
-        xhr.onerror = function() {
-            console.error('Request error.');
-        };
-
-        // Send the request
-        xhr.send();
-    </script>
 </body>
 </html>
