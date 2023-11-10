@@ -2,64 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Play .m3u8 File in HTML5 video player</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <link rel="stylesheet" href="style.css">
-	<style>
-		* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
-}
-
-body {
-    background: #222;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-body #video {
-    width: 600px;
-    height: 100%;
-    border-radius: 10px;
-    box-shadow:
-        0px 0px 10.4px rgba(0, 0, 0, 0.045),
-        0px 0px 25.1px rgba(0, 0, 0, 0.065),
-        0px 0px 47.2px rgba(0, 0, 0, 0.08),
-        0px 0px 84.2px rgba(0, 0, 0, 0.095),
-        0px 0px 157.5px rgba(0, 0, 0, 0.115),
-        0px 0px 377px rgba(0, 0, 0, 0.16);
-}
-	</style>
+    <title>Video Player</title>
+    <!-- Include Video.js library -->
+    <link href="https://vjs.zencdn.net/7.14.3/video-js.css" rel="stylesheet">
+    <script src="https://vjs.zencdn.net/7.14.3/video.js"></script>
 </head>
 <body>
-   <!-- Include the hls.js library -->
 
-<!-- Create a video element -->
-<video id="video" controls></video>
-
-<!-- Use hls.js to create a player and load the .m3u8 file -->
 <script>
-  var video = document.getElementById('video');
-  if(Hls.isSupported()) {
-    var hls = new Hls();
-    hls.loadSource('https://hls.streambtw.com/live/stream_e1.m3u8');
-    hls.attachMedia(video);
-    video.play();
-  }
-  else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = 'https://gettvfree.tech/live/stream_e2.m3u8';
-    video.addEventListener('loadedmetadata',function() {
-      video.play();
-    });
-  }
- 
+    var sv = "https://hls.streambtw.com/live/stream_e2.m3u8"; // Replace this with your actual video source
+
+    // Check if the user is on a mobile device
+    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/Mobile Safari/i) || navigator.userAgent.match(/Blackberry/i)) {
+        // For mobile devices, use simple HTML5 video
+        document.write("<video style=\"z-index:2;width:100%;height:100%;background-color:#000;-o-object-fit:fill;object-fit:fill\"  controls=\"controls\" autoplay=\"false\" preload=\"auto\" height=\"auto\" src=\"" + sv + "\"></video>");
+    } else {
+        // For non-mobile devices, use Video.js
+        document.write('<video id="streaming" autoplay  preload="auto" height="100%" width="100%" class="video-js" controls data-setup="{&quot;language&quot;: &quot;vi&quot;}"></video>');
+
+        function play(cid) {
+            src = cid;
+            player = videojs("streaming");
+            player.ready(function () {
+                player.src({
+                    src: src,
+                    type: "application/x-mpegURL",
+                    autoplay: "false",
+                    image: "https://content.jwplatform.com/thumbs/xJ7Wcodt-720.jpg",
+                });
+            });
+        }
+
+        play(sv);
+    }
 </script>
 
 </body>
 </html>
-
