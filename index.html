@@ -1,80 +1,65 @@
 <!DOCTYPE html>
-<html>
-<!-- Code by Keyframe Effects -->
+<html lang="en">
 <head>
-	<title>How to Play m3u8 Files with HTML5 Video Tag</title>
-	<link href="https://fonts.googleapis.com/css2?family=Paytone+One&display=swap" rel="stylesheet" />
-	<link href="https://vjs.zencdn.net/7.2.3/video-js.css" rel="stylesheet" />
-	<link href="style.css" rel="stylesheet" />
-    <style>
-        body {
-	background-image: linear-gradient(to right, #2B5876 , #4E4376);
-	color: #fff;
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play .m3u8 File in HTML5 video player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link rel="stylesheet" href="style.css">
+	<style>
+		* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
 }
 
-.maindiv {
-	text-align: center;
-}
-
-h1 {
-	font-size: 50px;
-	font-family: 'Paytone One', sans-serif;
-	margin-bottom: 50px;
-}
-
-#myVideo {
-	width: 50%;
-    border: 5px solid #00c7ff;
-    margin: 0 auto;
-    height: 60vh;
-}
-
-button.vjs-big-play-button {
-    margin: 0 auto;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    left: 0!important;
-    right: 0;
-    bottom: 0;
-    top: 0!important;
-    height: 100% !important;
-    border: none !important;
-    background: none !important;
-}
-
-.video-js .vjs-big-play-button .vjs-icon-placeholder:before {
-	bottom: 0;
+body {
+    background: #222;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
 }
-
-.video-js .vjs-tech {
-    height: 90%;
+body #video {
+    width: 600px;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow:
+        0px 0px 10.4px rgba(0, 0, 0, 0.045),
+        0px 0px 25.1px rgba(0, 0, 0, 0.065),
+        0px 0px 47.2px rgba(0, 0, 0, 0.08),
+        0px 0px 84.2px rgba(0, 0, 0, 0.095),
+        0px 0px 157.5px rgba(0, 0, 0, 0.115),
+        0px 0px 377px rgba(0, 0, 0, 0.16);
 }
-    </style>
+	</style>
 </head>
-
 <body>
+   <!-- Include the hls.js library -->
 
-<div class="maindiv">
-	<h1>Play m3u8 File with HTML5 Video Tag</h1>
+<!-- Create a video element -->
+<video id="video" controls></video>
 
-	<video id='myVideo'  class="video-js vjs-default-skin" width="400" height="300" controls>
-		<source type="application/x-mpegURL" src="https://ktvhdsg.ekantipur.com:8443/high_quality_85840165/hd/playlist.m3u8" />
-	</video>
-</div>
-
-<script src="https://vjs.zencdn.net/ie8/ie8-version/videojs-ie8.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/5.14.1/videojs-contrib-hls.js"></script>
-<script src="https://vjs.zencdn.net/7.2.3/video.js"></script>
-
+<!-- Use hls.js to create a player and load the .m3u8 file -->
 <script>
-	var player = videojs('myVideo');
-	player.play();
+  var video = document.getElementById('video');
+  if(Hls.isSupported()) {
+    var hls = new Hls();
+    hls.loadSource('https://arydigital.aryzap.com/ff5f087d60a78eea3940b58f17985e49/63b2655f/v1/0183ea2408f90b8ed5941a38bc72/0183ea24302d0b8ed5941a38bc75/ARYDigitalHDh264_1080p.m3u8');
+    hls.attachMedia(video);
+    video.play();
+  }
+  else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = 'https://arydigital.aryzap.com/ff5f087d60a78eea3940b58f17985e49/63b2655f/v1/0183ea2408f90b8ed5941a38bc72/0183ea24302d0b8ed5941a38bc75/ARYDigitalHDh264_1080p.m3u8';
+    video.addEventListener('loadedmetadata',function() {
+      video.play();
+    });
+  }
+ 
 </script>
 
 </body>
 </html>
+
